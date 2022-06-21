@@ -1,2 +1,2 @@
 
-from .ModelSearch import SearchModels
+from .SearchModels import SearchModels

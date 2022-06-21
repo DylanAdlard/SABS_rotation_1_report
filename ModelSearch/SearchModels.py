@@ -88,6 +88,57 @@ class SearchModels(object):
         self.upsample = upsample
         self.upsample_coef = upsample_coef
 
+        self.run_all = False
+
+    def AllModels(self):
+
+        self.run_all = True
+
+        LR = self.LogisticRegression()
+        SVC = self.LinearSVC()
+        Tree = self.DecisionTree()
+        Forest = self.RandomForest()
+
+        score_dict = {
+            LR[0]: ["LogisticRegression", LR[1]],
+            SVC[0]: ["LinearSVC", SVC[1]],
+            Tree[0]: ["DecisionTree", Tree[1]],
+            Forest[0]: ["RandomForest", Forest[1]],
+        }
+
+        best_score = np.max([i for i in score_dict.keys()])
+
+        best_model = score_dict[best_score]
+
+        self.estimator = best_model[1]
+
+        built_model = self.build_model(best_model[0], self.estimator["df"])
+
+        if best_model[0] in ["LogisticRegression", "LinearSVC"]:
+            feature_importance = SearchModels._plot_feature_coefficients(
+                built_model["built_model"],
+                built_model["data_array"],
+                self.estimator["df"],
+            )
+        elif best_model[0] in ["DecisionTree", "RandomForest"]:
+            feature_importance = SearchModels._plot_feature_importance(
+                built_model["built_model"],
+                built_model["data_array"],
+                self.estimator["df"],
+            )
+
+        return {
+            "best_df_name": self.estimator["df_name"],
+            "best_df": self.estimator["df"],
+            "best_score": self.estimator["cross_validation_score"],
+            "average_" + self.metric: self.estimator["average_" + self.metric],
+            "estimator": self.estimator["estimator"],
+            "built_model_performance": built_model["performance"],
+            "built_model_PR_curve": built_model["precision_recall_curve"],
+            "built_model_ROC_curve": built_model["ROC_curve"],
+            "built_feature_importance": feature_importance,
+        }
+
     def LogisticRegression(self):
         """Constructs a Logistic Regression pipeline with a grid search
         containing preprocessing strategeies and different values for C.
@@ -132,6 +183,9 @@ class SearchModels(object):
 
         best_av_score = np.max(scores)
         self.estimator = estimators[best_av_score]
+
+        if self.run_all == True:
+            return [best_av_score, estimators[best_av_score]]
 
         built_model = self.build_model("LogisticRegression", self.estimator["df"])
 
@@ -196,10 +250,11 @@ class SearchModels(object):
             scores = score_obj["scores"]
             estimators = score_obj["estimators"]
 
-            print(score_obj["scores"])
-
         best_av_score = np.max(scores)
         self.estimator = estimators[best_av_score]
+
+        if self.run_all == True:
+            return [best_av_score, estimators[best_av_score]]
 
         built_model = self.build_model("LinearSVC", self.estimator["df"])
 
@@ -339,6 +394,9 @@ class SearchModels(object):
         best_av_score = np.max(scores)
         self.estimator = estimators[best_av_score]
 
+        if self.run_all == True:
+            return [best_av_score, estimators[best_av_score]]
+
         built_model = self.build_model("DecisionTree", self.estimator["df"])
 
         feature_importance = SearchModels._plot_feature_importance(
@@ -369,7 +427,7 @@ class SearchModels(object):
         Returns
         ----------
         Dictionary as described in the primary class docstring
-        
+
         """
 
         scores = []
@@ -395,6 +453,9 @@ class SearchModels(object):
 
         best_av_score = np.max(scores)
         self.estimator = estimators[best_av_score]
+
+        if self.run_all == True:
+            return [best_av_score, estimators[best_av_score]]
 
         built_model = self.build_model("RandomForest", self.estimator["df"])
 
@@ -495,7 +556,7 @@ class SearchModels(object):
         return {"scores": scores, "estimators": estimators}
 
     def build_model(self, model, df):
-        """Builds and tests the specified model using the entire original 
+        """Builds and tests the specified model using the entire original
         training and test sets.
 
         Returns
@@ -527,7 +588,7 @@ class SearchModels(object):
             pipe = self.estimator["estimator"]
 
         X_train, X_test, y_train, y_test = train_test_split(
-            data_array, target, random_state=self.random_seed
+            data_array, target, random_state=self.random_seed,
         )
 
         if self.upsample == True:
@@ -574,7 +635,7 @@ class SearchModels(object):
             'ME': False negatives/ test set negatives
             'confusion_matrix': confusion matrix
         }
-        
+
         """
 
         # generate confusion matrix
@@ -602,8 +663,8 @@ class SearchModels(object):
 
     @staticmethod
     def _plot_precision_recall(model, pipe, X_test, y_test):
-        """ Plots the precision recall curve 
-        
+        """Plots the precision recall curve
+
         Returns
         ----------
         Preicision Recall Curve
@@ -644,8 +705,8 @@ class SearchModels(object):
 
     @staticmethod
     def _plot_ROC_curve(model, pipe, X_test, y_test):
-        """ Plots the ROC curve 
-        
+        """Plots the ROC curve
+
         Returns
         ----------
         ROC curve
@@ -675,6 +736,8 @@ class SearchModels(object):
             mew=2,
             figure=fig,
         )
+        plt.xlabel("FPR", figure=fig)
+        plt.ylabel("TPR", figure=fig)
         plt.legend(loc=4)
         plt.title("ROC curve", figure=fig)
         ROC_curve = fig
@@ -684,8 +747,8 @@ class SearchModels(object):
 
     @staticmethod
     def _plot_feature_importance(model, data_array, ML_df):
-        """ Plots the feature importance plot for tree models
-        
+        """Plots the feature importance plot for tree models
+
         Returns
         ----------
         Feature importance plot
@@ -711,9 +774,9 @@ class SearchModels(object):
 
     @staticmethod
     def _plot_feature_coefficients(model, data_array, ML_df):
-        """ Plots the feature coefficint plot for linear models.
+        """Plots the feature coefficint plot for linear models.
         This aims to provide a similar idea of importance as feature importance plots
-        
+
         Returns
         ----------
         Feature coefficient plot
@@ -745,15 +808,15 @@ class SearchModels(object):
     @staticmethod
     def _upsample(data_array, target, upsample_coef):
         """Upsamples the minority class by a defined number of multiples
-        _upsample should only be called after the data is split, and should 
+        _upsample should only be called after the data is split, and should
         only be called on the training sets to avoid data leakage (the model
         must be tested on non-upsampled data)
-        
+
         Returns
         ----------
         Dictionary of the form:
         {
-            'data_array': the upsampled feature set,
+            'data_array': the upsampled feature set, 89
             'target': the upsampled target set
         }
         """
