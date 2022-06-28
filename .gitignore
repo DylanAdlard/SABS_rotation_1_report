@@ -129,7 +129,6 @@ dmypy.json
 .pyre/
 
 #structural and trajectory files
-.Structural_files/*
+.Structural_files/*.npz
+.Structural_files/*.lock
 
-#sbmlcore
-sbmlcore/

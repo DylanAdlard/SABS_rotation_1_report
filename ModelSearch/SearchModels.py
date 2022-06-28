@@ -381,7 +381,7 @@ class SearchModels(object):
                 "max_depth": [2, 4, 6, 8, 10, 12, 14, None],
                 "min_samples_split": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
                 "min_samples_leaf": [0.1, 0.2, 0.3, 0.4, 0.5],
-                "max_features": ["auto", "sqrt", "log2", None],
+                "max_features": ["sqrt", "log2", None],
             }
 
             score_obj = self.TreeModelSearch(
