@@ -129,7 +129,7 @@ dmypy.json
 .pyre/
 
 #structural and trajectory files
-
+.Structural_files/*
 
 #sbmlcore
 sbmlcore/
