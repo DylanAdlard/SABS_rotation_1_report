@@ -1,4 +1,4 @@
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/DylanAdlard/SABS_rotation_1_report/HEAD?labpath=https%3A%2F%2Fgithub.com%2FDylanAdlard%2FSABS_rotation_1_report%2Fblob%2Fmain%2FReport.ipynb)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/DylanAdlard/SABS_rotation_1_report/main)
 
 # SABS_rotation_1_report
 
