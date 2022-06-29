@@ -1,6 +1,0 @@
-Structural_files/rpob-5uh6-3-warm.gro filter=lfs diff=lfs merge=lfs -text
-Structural_files/5uh6.pdb filter=lfs diff=lfs merge=lfs -text
-Structural_files/Mechanism.vmd filter=lfs diff=lfs merge=lfs -text
-Structural_files/rpob-5uh6-3-md-1-50ns-dt100ps-nojump.xtc filter=lfs diff=lfs merge=lfs -text
-Structural_files/rpob-5uh6-3-md-2-50ns-dt100ps-nojump.xtc filter=lfs diff=lfs merge=lfs -text
-Structural_files/rpob-5uh6-3-md-3-50ns-dt100ps-nojump.xtc filter=lfs diff=lfs merge=lfs -text
