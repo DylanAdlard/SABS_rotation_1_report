@@ -14,4 +14,4 @@ The SearchModels() class can be found in ModelsSearch/SearchModels.py.
 
 The sbmlcore software repository can be accessed at https://github.com/fowler-lab/sbmlcore.
 
-The repository is accessible on MyBinder, however Stride will not run - therefore, the notebook will only run if Stride secondary structure is removed as a feature.
+The repository is accessible on MyBinder, however Stride can't be installed - therefore, the notebook will only run if Stride secondary structure is removed as a feature.
