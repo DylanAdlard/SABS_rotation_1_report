@@ -1,4 +1,4 @@
-name: null
+name: SABS_rotation_1
 channels:
   - conda-forge
   - defaults
@@ -96,4 +96,3 @@ dependencies:
       - sbmlcore==0.1.4
       - tomli==2.0.1
       - tqdm==4.64.0
-prefix: /Users/dylanadlard/opt/anaconda3/envs/SABS_1_report_env
